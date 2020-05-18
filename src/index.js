@@ -1,10 +1,22 @@
-import Yoga from "../build/yoga";
 import entry from "../yoga/javascript/sources/entry-common";
-
-const mod = Yoga();
+import emscripten from '../build/yoga.js'
 
 function bind(name, proto) {
     return proto;
 }
 
-export default entry(bind, mod);
+function init(mod) {
+    return entry(bind, mod)
+}
+
+export default function Yoga(path) {
+    return emscripten({
+        locateFile() {
+            return path
+        },
+        onRuntimeInitialized() {
+            console.log('onRuntimeInitialized')
+        }
+      }).then(init)
+}
+
